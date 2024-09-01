@@ -1,7 +1,5 @@
-import 'dart:convert';
-
+import 'package:appi/services/user_api.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 import '../models/User.dart';
 
@@ -16,6 +14,12 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -28,46 +32,23 @@ class _HomepageState extends State<Homepage> {
             final email = user.email;
             final gender = user.gender;
             final phone = user.phone;
+            final name = user.name;
             //final image = user['picture']['thumbnail'];
             return ListTile(
                 leading: ClipRRect(
                     borderRadius: BorderRadius.circular(100),
                     child: /*Image.network(image))*/ Text('${index + 1}')),
-                title: Text(email),
+                title: Text(user.fullName()),
                 subtitle: Text(phone));
           }),
-      floatingActionButton: FloatingActionButton(
-        onPressed: fetchData,
-      ),
+      
     );
   }
+Future<void> fetchData() async {
+  final response = await UserApi.fetchData();
+  setState(() {
+    users = response;
+  });
+}
 
-  void fetchData() async {
-    print("fetch Data called");
-    final url = 'https://randomuser.me/api/?results=13';
-    final uri = Uri.parse(url);
-    final response = await http.get(uri);
-    final body = response.body;
-    final json = jsonDecode(body);
-    final results = json['results'] as List<dynamic>;
-    final transformed = results.map((e) {
-      final name = UserName(
-          title: e['name']['title'],
-          first: e['name']['first'],
-          last: e['name']['last']);
-      return User(name,
-          gender: e['gender'],
-          email: e['email'],
-          phone: e['phone'],
-          cell: e['cell'],
-          nat: e['nat']);
-    }).toList();
-
-    setState(() {
-
-users = transformed;
-
-    });
-    print('fetchData completed');
-  }
 }
