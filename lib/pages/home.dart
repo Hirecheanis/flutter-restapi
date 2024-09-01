@@ -41,14 +41,13 @@ class _HomepageState extends State<Homepage> {
                 title: Text(user.fullName()),
                 subtitle: Text(phone));
           }),
-      
     );
   }
-Future<void> fetchData() async {
-  final response = await UserApi.fetchData();
-  setState(() {
-    users = response;
-  });
-}
 
+  Future<void> fetchData() async {
+    final response = await UserApi.fetchData();
+    setState(() {
+      users = response;
+    });
+  }
 }

@@ -13,6 +13,7 @@ class UserApi {
     final json = jsonDecode(body);
     final results = json['results'] as List<dynamic>;
     final users = results.map((e) {
+      //TODO: abstract this json databinding
       final name = UserName(
           title: e['name']['title'],
           first: e['name']['first'],
